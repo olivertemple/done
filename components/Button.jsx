@@ -7,4 +7,6 @@ export default function Button(props){
             <Image source={props.image} style={props.imageStyle}></Image>
         </TouchableHighlight>
     )
+
+    
 }

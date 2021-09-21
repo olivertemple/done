@@ -1,13 +1,20 @@
 import React from 'react';
 import { Component } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView } from 'react-native';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, UIManager, LayoutAnimation, Platform } from 'react-native';
 import Add from './components/Add';
 import { StatusBar } from 'expo-status-bar';
 import Button from "./components/Button";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListItem from './components/items/ListItem';
+import GridItem from "./components/items/GridItem";
+import ConfettiCannon from 'react-native-confetti-cannon';
+import Settings from './components/Settings';
 
-
+if (Platform.OS === 'android') {  
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);  
+  }
+}
 
 export default class App extends Component{
   constructor(props){
@@ -15,7 +22,11 @@ export default class App extends Component{
     this.state = {
       name:null,
       habits:null,
-      screen:null
+      screen:null,
+      edit:false,
+      list:true,
+      confetti:false,
+      animations:null
     }
 
     this.updateName = this.updateName.bind(this);
@@ -25,7 +36,13 @@ export default class App extends Component{
     this.renderScreens = this.renderScreens.bind(this);
     this.addHabit = this.addHabit.bind(this);
     this.menuBar = this.menuBar.bind(this);
-    
+    this.edit = this.edit.bind(this);
+    this.titleBar = this.titleBar.bind(this);
+    this.delete = this.delete.bind(this);
+    this.updateHabits = this.updateHabits.bind(this);
+    this.showConfetti = this.showConfetti.bind(this);
+    this.confetti = this.confetti.bind(this);
+
     this.getName().then(name => {
       if (name){
         this.setState({
@@ -33,8 +50,24 @@ export default class App extends Component{
         })
       }
     })
+    AsyncStorage.getItem("animations").then(res => {
+      this.setState({animations:res})
+    })
 
+    this.updateHabits();
+  }
 
+  showConfetti(){
+    console.log(this.state)
+    if (this.state.animations){
+      this.setState({
+        confetti:true
+      })
+    }
+    
+  }
+
+  updateHabits(){
     this.getHabits().then(habits => {
       this.setState({
         habits:JSON.parse(habits)
@@ -66,8 +99,15 @@ export default class App extends Component{
   }
 
   add(){
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
       screen:"add"
+    })
+  }
+
+  edit(){
+    this.setState({
+      edit:true
     })
   }
 
@@ -81,25 +121,72 @@ export default class App extends Component{
       state.habits = {}
       state.habits[title] = data;
     }
-    
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState(state);
     AsyncStorage.setItem("habits", JSON.stringify(state.habits))
   }
 
   menuBar(){
-    return(
-      <View style={{flexDirection:"row", justifyContent:"space-between", padding:10}}>
-        <TouchableOpacity>
-          <Image source={require("./assets/pencil.png")} style={{width:20, height:20}}></Image>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.add}>
-          <Image source={require("./assets/add(1).png")} style={{width:20, height:20}}></Image>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Image source={require("./assets/visualization.png")} style={{width:20, height:20}}></Image>
-        </TouchableOpacity>
-      </View>
-    )
+    if (!this.state.edit){
+      return(
+        <View style={{flexDirection:"row", justifyContent:"space-between", padding:10}}>
+          <TouchableOpacity onPress={this.edit}>
+            <Image source={require("./assets/pencil.png")} style={{width:20, height:20}}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.add}>
+            <Image source={require("./assets/add(1).png")} style={{width:20, height:20}}></Image>
+          </TouchableOpacity>
+    
+          <TouchableOpacity onPress = {() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({list:!this.state.list})}}>
+            <Image source={require("./assets/visualization.png")} style={{width:20, height:20}}></Image>
+          </TouchableOpacity>
+        </View>
+      )
+    }else{
+      return(
+        <View style={{flexDirection:"row", justifyContent:"center", padding:10}}>
+          <TouchableOpacity onPress={() => {this.setState({edit:false})}}>
+            <Image source={require("./assets/check.png")} style={{width:30, height:30}}></Image>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+    
+  }
+
+  titleBar(){
+    if (!this.state.edit){
+      return(
+        <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+          <View>
+            <Text style={{fontSize:26, fontWeight:"bold"}}>Good morning,</Text>
+            <Text style={{fontSize:26, fontWeight:"bold"}}>{this.state.name}</Text>
+          </View>
+          <View>
+            <TouchableOpacity style={{margin:10}} onPress={() => {this.setState({screen:"settings"})}}>
+              <Image source={require("./assets/settings.png")} style={{height:25, width:25}}></Image>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      )
+    }else{
+      return(
+        <View>
+          <Text style={styles.text1}>Edit</Text>
+          <Text style={[styles.text1, {color:"#00000000"}]}>placeholder</Text>
+        </View>
+      )
+    }
+    
+  }
+
+  delete(data){
+    let state = this.state
+    delete state.habits[data.title]
+    this.setState(state)
+
+    AsyncStorage.setItem("habits",JSON.stringify(state.habits))
   }
 
   renderScreens(){
@@ -108,10 +195,10 @@ export default class App extends Component{
         return (
           <View style={styles.container}>
             <View style={styles.innerContainer}>
-              <View>
-                <Text style={styles.text1}>Done.</Text>
-                <Text style={styles.text2}>The place to track all of your habits</Text>
-              </View>
+            <View>
+              <Text style={styles.text1}>Done.</Text>
+              <Text style={styles.text2}>The place to track all of your habits</Text>
+            </View>
               <View>
                 <Text style={styles.text2}>What is your name?</Text>
                 <TextInput placeholder="name" style={[styles.input, styles.text2]} onChangeText = {(text) => {this.updateName(text)}}></TextInput>
@@ -124,16 +211,22 @@ export default class App extends Component{
         return(
           <View style={{padding:10, justifyContent:"space-between", height:Dimensions.get("window").height}}>
             <View>
-              <View>
-                <Text style={{fontSize:26, fontWeight:"bold"}}>Good morning,</Text>
-                <Text style={{fontSize:26, fontWeight:"bold"}}>{this.state.name}</Text>
-              </View>
+              <this.titleBar />
               <ScrollView style={{height:Dimensions.get("window").height - 140}}>
-                {Object.keys(this.state.habits).map(key => {
-                  return(
-                    <ListItem  data={this.state.habits[key]}></ListItem>
-                  )
-                })}
+                <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
+                  {Object.keys(this.state.habits).map(key => {
+                    if (this.state.list){
+                      return(
+                        <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti}></ListItem>
+                      )
+                    }else{
+                      return(
+                        <GridItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti}></GridItem>
+                      )
+                    }
+                    
+                  })}
+                </View>
               </ScrollView>
             </View>
             <this.menuBar />
@@ -143,10 +236,7 @@ export default class App extends Component{
         return(
           <View style={{padding:10, justifyContent:"space-between", height:Dimensions.get("window").height}}>
             <View style={{gap:10}}>
-              <View>
-                <Text style={{fontSize:26, fontWeight:"bold"}}>Good morning,</Text>
-                <Text style={{fontSize:26, fontWeight:"bold"}}>{this.state.name}</Text>
-              </View>
+              <this.titleBar />
               <Text style={{fontSize:20}}>
                 Add some habits to get started
               </Text>
@@ -158,17 +248,32 @@ export default class App extends Component{
     }else if (this.state.screen === "add"){
       return(
         <View style={{height:Dimensions.get("window").height}}>
-          <Add cancel={() => {this.setState({screen:null})}} addHabit={this.addHabit}></Add>
+          <Add cancel={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:null})}} addHabit={this.addHabit}></Add>
         </View>
+      )
+    }else if (this.state.screen === "settings"){
+      return(
+        <Settings updateName={(name) => {this.setState({name:name})}} updateAnimations={(animations) => {this.setState({animations:eval(animations)})}} exit={() =>{this.setState({screen:null})}}></Settings>
       )
     }
     
     
   }
+
+  confetti(){
+    if (this.state.confetti){
+      return(
+        <ConfettiCannon count={200} origin={{x: -10, y: 0}} onAnimationEnd={() => {this.setState({confetti:false})}}/>
+      )
+    }else{
+      return null
+    }
+  }
   render(){
     return(
       <View style={{marginTop:30}}>
           <StatusBar style="auto" />
+          <this.confetti />
           <this.renderScreens />
       </View>
     )

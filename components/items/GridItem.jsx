@@ -79,12 +79,13 @@ export default class ListItem extends Component{
     }
     let scaleFactor=this.state.today/this.state.daily
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({progress:this.progress, scaleFactor:scaleFactor})
+    this.setState({progress:this.progress, scaleFactor:scaleFactor},()=>{
+        console.log(this.state)
+    })
    }
     increaseToday(){
         if (this.state.today < this.state.daily){
             let state = this.state;
-            
             this.setState({
                 today:state.today+1,
                 scaleFactor:(state.today+1)/state.daily,
@@ -128,7 +129,7 @@ export default class ListItem extends Component{
             )
         }else{
             return(
-                <View style={{flexDirection:"row", alignItems:"center", gap:10}}>
+                <View style={{flexDirection:"row", alignItems:"center", gap:20}}>
                     <TouchableOpacity>
                         <Image source={require("../../assets/palette.png")} style={{width:30, height:30}}></Image>
                     </TouchableOpacity>
@@ -142,19 +143,22 @@ export default class ListItem extends Component{
     }
 
     render(){
-        
+        if (this.state.timeFrame === "daily"){
+            this.progress = (this.state.today+"/"+this.state.daily) + " today"
+        }else if (this.state.timeFrame === "weekly"){
+            this.progress = (this.state.today+"/"+this.state.daily) + " this week"
+        }
 
         return(
-            <TouchableOpacity onPress = {this.increaseToday} style={{marginTop:10}}>
+            <TouchableOpacity onPress = {this.increaseToday} style={{marginRight:10, marginTop:10}}>
                 <View>
-                    <View style={{backgroundColor:this.state.scaleFactor > 0 ? this.state.color : "#00000000", width:((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1, height:76.1, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
+                    <View style={{backgroundColor:this.state.color, width:((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor, height:110, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
 
-                    <View style={[styles.container, {zIndex:1, marginTop:-76}]}>
+                    <View style={[styles.container, {zIndex:1, marginTop:-110, width:((Dimensions.get("window").width/2) - 20)}]}>
                         <View style={{flexDirection:"row", alignItems:"center"}}>
-                            
                             <View style={styles.main}>
                                 <Text style={{fontSize:26}}>{this.state.title}</Text>
-                                <Text style={{fontSize:16}}>{this.state.progress}</Text>
+                                <Text style={{fontSize:16}}>{this.progress}</Text>
                             </View>
                         </View>
                         <this.right />
@@ -168,15 +172,16 @@ export default class ListItem extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent:"space-between",
         padding:10,
         borderRadius:10,
-        width:(Dimensions.get("window").width - 20)
+        alignItems:"center",
     },
     main:{
         flexDirection:"column",
-        justifyContent:"center"
+        justifyContent:"center",
+        alignItems:"center"
     }
 })  
 
