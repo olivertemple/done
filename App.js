@@ -131,7 +131,6 @@ export default class App extends Component{
   }
 
   pauseHabit(name){
-    console.log(name)
     let state = this.state;
     let habit = state.habits[name]
     delete state.habits[name]
@@ -150,7 +149,6 @@ export default class App extends Component{
   }
 
   play(name){
-    console.log(name)
     let state = this.state;
     let habit = state.paused[name]
     delete state.paused[name]
