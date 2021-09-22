@@ -9,14 +9,16 @@ export default class Settings extends Component{
         super(props);
         this.state = {
             name:null,
-            animations:null,
+            animations:true,
             pp:false
         }
         AsyncStorage.getItem("name").then(name => {
             this.setState({name:name})
         })
         AsyncStorage.getItem("animations").then(res => {
-            this.setState({animations:eval(res)})
+            if (res!==null){
+                this.setState({animations:eval(res)})
+            }
         })
         this.updateName = this.updateName.bind(this);
         this.animationSwitch = this.animationSwitch.bind(this);
@@ -28,7 +30,7 @@ export default class Settings extends Component{
     }
 
     animationSwitch(){
-        AsyncStorage.setItem("animations", !this.state.animations)
+        AsyncStorage.setItem("animations", JSON.stringify(!this.state.animations))
         this.props.updateAnimations(!this.state.animations)
         this.setState({animations:!this.state.animations})
     }
@@ -48,7 +50,7 @@ export default class Settings extends Component{
                         </View>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                             <Text style={{fontSize:20}}>Reduce animations:</Text>
-                            <Switch value={this.state.animations} onValueChange={this.animationSwitch}></Switch>
+                            <Switch value={!this.state.animations} onValueChange={this.animationSwitch}></Switch>
                         </View>
                         <ScrollView>
                             <View style={{marginTop:10}}>

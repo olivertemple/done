@@ -142,8 +142,6 @@ export default class ListItem extends Component{
     }
 
     render(){
-        
-
         return(
             <TouchableOpacity onPress = {this.increaseToday} style={{marginTop:10}}>
                 <View>
@@ -172,7 +170,10 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
         padding:10,
         borderRadius:10,
-        width:(Dimensions.get("window").width - 20)
+        width:(Dimensions.get("window").width - 20),
+        borderWidth:2,
+        borderColor:"black",
+        height:76.1
     },
     main:{
         flexDirection:"column",
