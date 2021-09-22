@@ -13,8 +13,8 @@ export default class ListItem extends Component{
         this.right = this.right.bind(this);
         this.checkStats = this.checkStats.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
-
-    }
+        this.pause = this.pause.bind(this);
+    }  
 
     componentDidMount(){
         if(!this.props.paused){
@@ -84,7 +84,7 @@ export default class ListItem extends Component{
     this.setState({progress:this.progress, scaleFactor:scaleFactor})
    }
     increaseToday(){
-        if (this.state.today < this.state.daily){
+        if (this.state.today < this.state.daily && !this.props.edit){
             let state = this.state;
             
             this.setState({
@@ -119,6 +119,9 @@ export default class ListItem extends Component{
             this.props.updateHabits();
         })
     }
+    pause(){
+        this.props.pause(this.state.title)
+    }
 
     right(){
         if (!this.props.edit){
@@ -131,7 +134,7 @@ export default class ListItem extends Component{
         }else{
             return(
                 <View style={{flexDirection:"row", alignItems:"center", gap:10}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={this.pause}>
                         <Image source={this.props.paused ? require("../../assets/play.png") : require("../../assets/pause.png")} style={{width:25, height:25}}></Image>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => (this.props.delete(this.state))}>

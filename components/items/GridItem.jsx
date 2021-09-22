@@ -85,7 +85,7 @@ export default class ListItem extends Component{
     this.setState({progress:this.progress, scaleFactor:scaleFactor})
    }
     increaseToday(){
-        if (this.state.today < this.state.daily){
+        if (this.state.today < this.state.daily && !this.props.edit){
             let state = this.state;
             this.setState({
                 today:state.today+1,
