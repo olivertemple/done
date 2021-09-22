@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { Component } from "react";
 import { Image, View, StyleSheet, Text, TouchableOpacity, Dimensions,UIManager, LayoutAnimation, Platform } from "react-native";
+import Colours from "../Colours";
 
 export default class ListItem extends Component{
     constructor(props){
@@ -13,11 +14,13 @@ export default class ListItem extends Component{
         this.right = this.right.bind(this);
         this.checkStats = this.checkStats.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
-
+        this.pause = this.pause.bind(this);
     }
 
     componentDidMount(){
-        this.checkStats();
+        if (!this.props.paused){
+            this.checkStats();
+        }
     }
 
    checkStats(){
@@ -79,9 +82,7 @@ export default class ListItem extends Component{
     }
     let scaleFactor=this.state.today/this.state.daily
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({progress:this.progress, scaleFactor:scaleFactor},()=>{
-        console.log(this.state)
-    })
+    this.setState({progress:this.progress, scaleFactor:scaleFactor})
    }
     increaseToday(){
         if (this.state.today < this.state.daily){
@@ -119,6 +120,10 @@ export default class ListItem extends Component{
         })
     }
 
+    pause(){
+        this.props.pause(this.state.title)
+    }
+
     right(){
         if (!this.props.edit){
             return(
@@ -129,11 +134,11 @@ export default class ListItem extends Component{
             )
         }else{
             return(
-                <View style={{flexDirection:"row", alignItems:"center", gap:20}}>
-                    <TouchableOpacity>
-                        <Image source={require("../../assets/palette.png")} style={{width:30, height:30}}></Image>
+                <View style={{flexDirection:"row", alignItems:"center",marginTop:5}}>
+                    <TouchableOpacity onPress={this.pause}>
+                        <Image source={this.props.paused ? require("../../assets/play.png") : require("../../assets/pause.png")} style={{width:25, height:25}}></Image>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => (this.props.delete(this.state))}>
+                    <TouchableOpacity onPress={() => (this.props.delete(this.state))} style={{marginLeft:10}}>
                         <Image source={require("../../assets/trash.png")} style={{width:30, height:30}}></Image>
                     </TouchableOpacity>
                 </View>
@@ -152,9 +157,8 @@ export default class ListItem extends Component{
         return(
             <TouchableOpacity onPress = {this.increaseToday} style={{marginRight:10, marginTop:10}}>
                 <View>
-                    <View style={{backgroundColor:this.state.color, width:((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor, height:110, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
-
-                    <View style={[styles.container, {zIndex:1, marginTop:-110, width:((Dimensions.get("window").width/2) - 20)}]}>
+                    <View style={{backgroundColor:this.state.color, width:((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor, height:this.props.edit ? 120 : 120, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
+                    <View style={[styles.container, {zIndex:1, marginTop:this.props.edit ? -120 : -120, width:((Dimensions.get("window").width/2) - 20), height:this.props.edit ? 120 : 120}]}>
                         <View style={{flexDirection:"row", alignItems:"center"}}>
                             <View style={styles.main}>
                                 <Text style={{fontSize:26}}>{this.state.title}</Text>
@@ -177,6 +181,8 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius:10,
         alignItems:"center",
+        borderWidth:2,
+        borderColor:"black",
     },
     main:{
         flexDirection:"column",

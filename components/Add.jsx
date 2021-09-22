@@ -4,13 +4,14 @@ import { RadioButton } from 'react-native-paper';
 import { TextInput } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Colours from "./Colours";
 
 export default class Add extends Component{
     constructor(props){
         super(props)
         this.state = {
             timeFrame:"daily",
-            color:"red",
+            color:null,
             title:null,
             times:1,
             emoji:null,
@@ -19,6 +20,7 @@ export default class Add extends Component{
 
         this.setTimeFrameValue = this.setTimeFrameValue.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);
+        this.setColour = this.setColour.bind(this);
         this.add = this.add.bind(this);
         this.habitTitles = null
         AsyncStorage.getItem("habits").then(res => {
@@ -44,7 +46,7 @@ export default class Add extends Component{
     }
 
     add(){
-        if (this.state.title && !this.habitTitles.includes(this.state.title)){
+        if (this.state.title && !this.habitTitles.includes(this.state.title) && this.state.color){
             let data={
                 last: + new Date(),
                 today:0,
@@ -52,8 +54,10 @@ export default class Add extends Component{
                 streak:0,
                 timeFrame:this.state.timeFrame,
                 icon:"icon",
-                color:this.state.color,
-                title:this.state.title
+                color:this.state.color.code,
+                colorName:this.state.color.name,
+                title:this.state.title,
+                paused:false
             }
             this.props.addHabit(data)
         }
@@ -73,6 +77,10 @@ export default class Add extends Component{
         }
     }
 
+    setColour(value){
+        this.setState({color:value})
+    }
+
     render(){
         return(
             <View style={{padding:20, justifyContent:"space-between", height:Dimensions.get("window").height}}>
@@ -83,7 +91,7 @@ export default class Add extends Component{
                     <View style={{gap:20}}>
                         <View>
                             <Text style={{fontSize:20}}>Goal title:</Text>
-                            <TextInput placeholder="title" style={{fontSize:16, borderColor:"black", borderWidth:1, padding:10, borderRadius:5}} onChangeText={text => {this.updateTitle(text)}}></TextInput>
+                            <TextInput placeholder="title" style={{borderColor:"black", borderWidth:1, padding:10, borderRadius:5}} onChangeText={text => {this.updateTitle(text)}}></TextInput>
                             <Text style={{color:this.state.titleWarning, fontSize:10}}>Title already exists</Text>
                         </View>
                         <View>
@@ -96,11 +104,11 @@ export default class Add extends Component{
                         </View>
                         <View>
                             <Text style={{fontSize:20}}>Times:</Text>
-                            <TextInput autoCompleteType="cc-number" placeholder="1" style={{fontSize:16, borderColor:"black", borderWidth:1, padding:10, borderRadius:5}} onChangeText={text =>{this.state.times = text}}></TextInput>
+                            <TextInput keyboardType="numeric" placeholder="1" style={{fontSize:16, borderColor:"black", borderWidth:1, padding:10, borderRadius:5, alignSelf:"flex-start"}} onChangeText={text =>{this.state.times = text}}></TextInput>
                         </View>
                         <View>
-                            <Text>Colour</Text>
-                            <TextInput placeholder="red" style={{fontSize:16, borderColor:"black", borderWidth:1, padding:10, borderRadius:5}} onChangeText={text =>{this.state.color = text}}></TextInput>
+                            <Text style={{fontSize:20}}>Colour</Text>
+                            <Colours setColour={this.setColour}></Colours>
 
                         </View>
                     </View>

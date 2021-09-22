@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, UIManager, LayoutAnimation, Platform } from 'react-native';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, UIManager, LayoutAnimation, Platform, TouchableWithoutFeedbackBase } from 'react-native';
 import Add from './components/Add';
 import { StatusBar } from 'expo-status-bar';
 import Button from "./components/Button";
@@ -26,7 +26,8 @@ export default class App extends Component{
       edit:false,
       list:true,
       confetti:false,
-      animations:true
+      animations:true,
+      paused:null
     }
 
     this.updateName = this.updateName.bind(this);
@@ -42,6 +43,9 @@ export default class App extends Component{
     this.updateHabits = this.updateHabits.bind(this);
     this.showConfetti = this.showConfetti.bind(this);
     this.confetti = this.confetti.bind(this);
+    this.toggleGrid = this.toggleGrid.bind(this);
+    this.pauseHabit = this.pauseHabit.bind(this);
+    this.play = this.play.bind(this);
 
     this.getName().then(name => {
       if (name){
@@ -53,6 +57,17 @@ export default class App extends Component{
     AsyncStorage.getItem("animations").then(res => {
       if (res !== null){
         this.setState({animations:res})
+      }
+    })
+    AsyncStorage.getItem("list").then(res => {
+      if (res!==null){
+        this.setState({list:eval(res)})
+      }
+    })
+
+    AsyncStorage.getItem("paused").then(res => {
+      if (res!==null){
+        this.setState({paused: JSON.parse(res)})
       }
     })
 
@@ -76,6 +91,8 @@ export default class App extends Component{
       })
     })
   }
+
+ 
 
   updateName(name){
     this.state.name = name;
@@ -113,6 +130,45 @@ export default class App extends Component{
     })
   }
 
+  pauseHabit(name){
+    console.log(name)
+    let state = this.state;
+    let habit = state.habits[name]
+    delete state.habits[name]
+    if (state.paused){ 
+      state.paused[name] = habit
+    }else{
+      state.paused = {}
+      state.paused[name] = habit
+    }
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState(state)
+
+    AsyncStorage.setItem("habits", JSON.stringify(state.habits))
+    AsyncStorage.setItem("paused", JSON.stringify(state.paused))
+
+  }
+
+  play(name){
+    console.log(name)
+    let state = this.state;
+    let habit = state.paused[name]
+    delete state.paused[name]
+    if (state.habits){ 
+      state.habits[name] = habit
+    }else{
+      state.habits = {}
+      state.habits[name] = habit
+    }
+    state.habits[name].last = + new Date()
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState(state)
+
+    AsyncStorage.setItem("habits", JSON.stringify(state.habits))
+    AsyncStorage.setItem("paused", JSON.stringify(state.paused))
+
+  }
+
   addHabit(data){
     let state = this.state;
     if (state.habits){
@@ -128,6 +184,12 @@ export default class App extends Component{
     AsyncStorage.setItem("habits", JSON.stringify(state.habits))
   }
 
+  toggleGrid(){
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    AsyncStorage.setItem("list",JSON.stringify(!this.state.list))
+    this.setState({list:!this.state.list})
+  }
+
   menuBar(){
     if (!this.state.edit){
       return(
@@ -139,8 +201,8 @@ export default class App extends Component{
             <Image source={require("./assets/add(1).png")} style={{width:20, height:20}}></Image>
           </TouchableOpacity>
     
-          <TouchableOpacity onPress = {() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({list:!this.state.list})}}>
-            <Image source={require("./assets/visualization.png")} style={{width:20, height:20}}></Image>
+          <TouchableOpacity onPress = {this.toggleGrid}>
+            <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={{width:20, height:20}}></Image>
           </TouchableOpacity>
         </View>
       )
@@ -176,7 +238,7 @@ export default class App extends Component{
       return(
         <View>
           <Text style={styles.text1}>Edit</Text>
-          <Text style={[styles.text1, {color:"#00000000"}]}>placeholder</Text>
+          <Text style={[styles.text1], {fontWeight:"normal", fontSize:26}}>Current</Text>
         </View>
       )
     }
@@ -219,16 +281,34 @@ export default class App extends Component{
                   {Object.keys(this.state.habits).map(key => {
                     if (this.state.list){
                       return(
-                        <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti}></ListItem>
+                        <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit}></ListItem>
                       )
                     }else{
                       return(
-                        <GridItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti}></GridItem>
+                        <GridItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit}></GridItem>
                       )
                     }
                     
                   })}
                 </View>
+                <Text style={{fontSize:26}}>{this.state.edit ? "Paused" : null}</Text>
+                {(this.state.edit&&this.state.paused) ? (
+                    <View>
+                       
+                        {Object.keys(this.state.paused).map(key => {
+                          if (this.state.list){
+                            return(
+                              <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play}></ListItem>
+                            )
+                          }else{
+                            return(
+                              <GridItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play}></GridItem>
+                            )
+                          }
+                          
+                        })}
+                    </View>
+                ) : null}
               </ScrollView>
             </View>
             <this.menuBar />

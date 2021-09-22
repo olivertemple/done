@@ -17,7 +17,9 @@ export default class ListItem extends Component{
     }
 
     componentDidMount(){
-        this.checkStats();
+        if(!this.props.paused){
+            this.checkStats();
+        }
     }
 
    checkStats(){
@@ -130,7 +132,7 @@ export default class ListItem extends Component{
             return(
                 <View style={{flexDirection:"row", alignItems:"center", gap:10}}>
                     <TouchableOpacity>
-                        <Image source={require("../../assets/palette.png")} style={{width:30, height:30}}></Image>
+                        <Image source={this.props.paused ? require("../../assets/play.png") : require("../../assets/pause.png")} style={{width:25, height:25}}></Image>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => (this.props.delete(this.state))}>
                         <Image source={require("../../assets/trash.png")} style={{width:30, height:30}}></Image>
