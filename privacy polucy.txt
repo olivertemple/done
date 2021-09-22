@@ -1,0 +1,12 @@
+Collection of your information
+
+The only data stored is your name and the data relating to different habits. We only store this data on your device, and we never store it on an external server. This data stored includes:
+* Your name
+* Habit name
+* Timestamp for when it was last completed
+* Streak
+* weather it is a daily or a weekly habit
+* color
+* progress of habit throughout time-frame (week or day)
+
+Your data is only used for the functions of the app. When the app is deleted, so is your data.
