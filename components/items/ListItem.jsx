@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import { Image, View, StyleSheet, Text, TouchableOpacity, Dimensions, LayoutAnimation } from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
 
 export default class ListItem extends Component{
     constructor(props){
@@ -14,6 +15,8 @@ export default class ListItem extends Component{
         this.checkStats = this.checkStats.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
         this.pause = this.pause.bind(this);
+        this.renderLeft = this.renderLeft.bind(this);
+        this.renderRight = this.renderRight.bind(this);
     }  
 
     componentDidMount(){
@@ -148,24 +151,65 @@ export default class ListItem extends Component{
         
     }
 
-    render(){
+    renderLeft(){
         return(
-            <TouchableOpacity onPress = {this.increaseToday} style={{marginTop:10, marginLeft:this.props.list ? 0 : 5, marginRight:this.props.list ? 0 : 5}}>
-                <View>
-                    <View style={this.props.list ? {backgroundColor:this.state.scaleFactor > 0 ? this.state.color : "#00000000", width:((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1, height:76.1, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0} : {backgroundColor:this.state.color, width:((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor, height:this.props.edit ? 120 : 120, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
-                    <View style={[styles.container, this.props.list ? {zIndex:1, marginTop:-76,flexDirection: this.props.list ? "row" : "column"} : {zIndex:1, marginTop:this.props.edit ? -120 : -120, width:((Dimensions.get("window").width/2) - 20), height:this.props.edit ? 120 : 120, alignItems:"center"}]}>
-                        <View style={{flexDirection:"row", alignItems:"center"}}>
-                            
-                            <View style={[styles.main, this.props.list ? {} : {alignItems:"center"}]}>
-                                <Text style={{fontSize:26}}>{this.state.title}</Text>
-                                <Text style={{fontSize:16}}>{this.state.progress}</Text>
+            <View style={{justifyContent:"center", alignItems:"center"}}>
+                <Image source={this.props.paused ? require("../../assets/play.png") : require("../../assets/pause.png")} style={{height:20, width:20}}></Image>
+            </View>
+        )
+    }
+
+    renderRight(){
+        return(
+            <View style={{justifyContent:"center", alignItems:"center"}}>
+                <Image source={require("../../assets/trash.png")} style={{height:20, width:20}}></Image>
+            </View>
+        )
+    }
+
+    render(){
+        this.ref = createRef(null)
+        return(
+            <Swipeable ref={this.ref} renderLeftActions={this.renderLeft} renderRightActions={this.renderRight} onSwipeableRightOpen={() => {this.props.delete(this.state)}} onSwipeableLeftOpen={() => {this.props.pause(this.state.title)}}>
+                <TouchableOpacity onPress = {this.increaseToday} style={{marginTop:10, marginLeft:this.props.list ? 0 : 5, marginRight:this.props.list ? 0 : 5, borderRadius:10,flex:1}}>
+                    <View style={{flexDirection:"column", maxHeight:2000, minHeight:76.1}}>
+                        <View style={[styles.container, this.props.list ? {zIndex:1,flexDirection: this.props.list ? "row" : "column"} : {zIndex:1, width:((Dimensions.get("window").width/2) - 20), alignItems:"center"}]}>
+                            <View style={{flexDirection:"row", alignItems:"center", maxWidth:this.props.list ? ((Dimensions.get("window").width) - 80) :((Dimensions.get("window").width/2) - 20) }}>
+                                <View style={[styles.main, this.props.list ? {} : {alignItems:"center"}]}>
+                                    <Text style={{fontSize:26}}>{this.state.title}</Text>
+                                    <Text style={{fontSize:16}}>{this.state.progress}</Text>
+                                </View>
                             </View>
+                            <this.right />
                         </View>
-                        <this.right />
+                        <View style={{flexDirection:"row", position:"absolute", borderRadius:10, height:"100%"}}>
+                                <View style={[{}, this.props.list ? {
+                                backgroundColor:this.state.scaleFactor > 0 ? this.state.color : "#00000000",
+                                width:((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1,
+                                zIndex:0,
+                                borderTopLeftRadius:10,
+                                borderBottomLeftRadius:10,
+                                borderRadius: (this.state.today==this.state.daily) ? 10 :0}
+                                :
+                                {backgroundColor:this.state.color,
+                                width:((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor,
+                                zIndex:0,
+                                borderTopLeftRadius:10,
+                                borderBottomLeftRadius:10,
+                                borderRadius: (this.state.today==this.state.daily) ? 10 : 0}]}>
+                                </View>
+
+                                <View style={[{backgroundColor:"#E8E8E8", borderRadius:this.state.scaleFactor > 0 ? 0 : 10, borderTopRightRadius:10, borderBottomRightRadius:10},this.props.list ? {
+                                width:(Dimensions.get("window").width - 20) - (((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1)
+                            } : {
+                                width: (Dimensions.get("window").width/2 - 20) - (((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor)
+                            }]}></View>
+                        </View>
+
                         
                     </View>
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
+            </Swipeable>
         )
     }
 }
@@ -176,9 +220,8 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius:10,
         width:(Dimensions.get("window").width - 20),
-        borderWidth:2,
+        borderWidth:0,
         borderColor:"black",
-        height:76.1
     },
     main:{
         flexDirection:"column",
@@ -186,4 +229,6 @@ const styles = StyleSheet.create({
     }
 })  
 
-/*<Image source={this.state.icon} style={{height:35, width:35}}></Image>*/
+/*
+
+*/

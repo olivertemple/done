@@ -130,6 +130,7 @@ export default class App extends Component{
   }
 
   pauseHabit(name){
+    console.log(name)
     let state = this.state;
     let habit = state.habits[name]
     delete state.habits[name]
@@ -190,9 +191,9 @@ export default class App extends Component{
   menuBar(){
     if (!this.state.edit){
       return(
-        <View style={{flexDirection:"row", justifyContent:"space-between", padding:10}}>
-          <TouchableOpacity onPress={this.edit}>
-            <Image source={require("./assets/pencil.png")} style={{width:20, height:20}}></Image>
+        <View style={{flexDirection:"row", justifyContent:"space-between", padding:10, alignItems:"center"}}>
+          <TouchableOpacity style={{margin:10}} onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
+            <Image source={require("./assets/settings.png")} style={{height:25, width:25}}></Image>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.add}>
             <Image source={require("./assets/add(1).png")} style={{width:20, height:20}}></Image>
@@ -217,16 +218,20 @@ export default class App extends Component{
 
   titleBar(){
     if (!this.state.edit){
+      let time = new Date().getHours();
+      let text;
+      if (time < 12){
+        text = "Good morning"
+      }else if (time >=12 && time < 17){
+        text = "Good afternoon"
+      }else{
+        text = "Good evening"
+      }
       return(
         <View style={{flexDirection:"row", justifyContent:"space-between"}}>
           <View>
-            <Text style={{fontSize:26, fontWeight:"bold"}}>Good morning,</Text>
+            <Text style={{fontSize:26, fontWeight:"bold"}}>{text},</Text>
             <Text style={{fontSize:26, fontWeight:"bold"}}>{this.state.name}</Text>
-          </View>
-          <View>
-            <TouchableOpacity style={{margin:10}} onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
-              <Image source={require("./assets/settings.png")} style={{height:25, width:25}}></Image>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -245,9 +250,12 @@ export default class App extends Component{
   delete(data){
     let state = this.state
     delete state.habits[data.title]
+    delete state.paused[data.title]
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState(state)
 
     AsyncStorage.setItem("habits",JSON.stringify(state.habits))
+    AsyncStorage.setItem("paused", JSON.stringify(state.paused))
   }
 
   renderScreens(){
@@ -279,20 +287,15 @@ export default class App extends Component{
                     return(
                       <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit} list={this.state.list}></ListItem>
                     )
-
-                    
                   })}
                 </View>
-                <Text style={{fontSize:26}}>{this.state.edit ? "Paused" : null}</Text>
-                {(this.state.edit&&this.state.paused) ? (
+                {(Object.keys(this.state.paused).length > 0) ? (
                     <View>
-                       
+                        <Text style={{fontSize:26}}>Paused</Text>
                         {Object.keys(this.state.paused).map(key => {
                           return(
                             <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list}></ListItem>
                           )
-                          
-                          
                         })}
                     </View>
                 ) : null}

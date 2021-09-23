@@ -51,6 +51,8 @@ export default class Colours extends Component{
     }
 
     handleRotation(){
+        this.props.key1.current.blur();
+        this.props.key2.current.blur();
         Animated.timing(this.state.rotateAnimation,{
             toValue:!this.state.expanded ? 1 : 0,
             duration:this.state.animations ? 200 : 0,
@@ -72,9 +74,9 @@ export default class Colours extends Component{
 
     render(){
         return(
-            <View style={{padding:2, borderWidth:1, borderColor:"black", borderRadius:10, backgroundColor:"white"}}>
+            <View style={{padding:10, borderRadius:5, backgroundColor:"#E3E3E3", marginTop:5}}>
                 <View>
-                    <TouchableOpacity onPress={this.handleRotation}>
+                    <TouchableOpacity onPress={this.handleRotation} onBlur={() => {console.log("BLUR!!")}}>
                         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
                             <View style={{flexDirection:"row", alignItems:"center"}}>
                                 <View style={{height:10, width:10, borderRadius:100, backgroundColor:this.state.selectedColour}}></View>
@@ -84,11 +86,11 @@ export default class Colours extends Component{
                         </View>
                     </TouchableOpacity>
                 </View>
-                <ScrollView style={{display:this.state.expanded ? "flex" : "none"}}>
+                <ScrollView style={{display:this.state.expanded ? "flex" : "none", maxHeight:300}}>
                     {this.colours.map(value => {
                         return(
                             <TouchableOpacity key={value.name} onPress={() => {this.setColour(value)}}>
-                                <View style={{flexDirection:"row", alignItems:"center", margin:2}}>
+                                <View style={{flexDirection:"row", alignItems:"center", margin:10}}>
                                     <View style={{height:10, width:10, borderRadius:100, backgroundColor:value.code}}></View>
                                     <Text style={{marginLeft:5, fontSize:16}}>{value.name}</Text>
                                 </View>
