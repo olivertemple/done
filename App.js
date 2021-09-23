@@ -6,7 +6,6 @@ import { StatusBar } from 'expo-status-bar';
 import Button from "./components/Button";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListItem from './components/items/ListItem';
-import GridItem from "./components/items/GridItem";
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Settings from './components/Settings';
 
@@ -277,15 +276,10 @@ export default class App extends Component{
               <ScrollView style={{height:Dimensions.get("window").height - 140}}>
                 <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                   {Object.keys(this.state.habits).map(key => {
-                    if (this.state.list){
-                      return(
-                        <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit}></ListItem>
-                      )
-                    }else{
-                      return(
-                        <GridItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit}></GridItem>
-                      )
-                    }
+                    return(
+                      <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit} list={this.state.list}></ListItem>
+                    )
+
                     
                   })}
                 </View>
@@ -294,15 +288,10 @@ export default class App extends Component{
                     <View>
                        
                         {Object.keys(this.state.paused).map(key => {
-                          if (this.state.list){
-                            return(
-                              <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play}></ListItem>
-                            )
-                          }else{
-                            return(
-                              <GridItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play}></GridItem>
-                            )
-                          }
+                          return(
+                            <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list}></ListItem>
+                          )
+                          
                           
                         })}
                     </View>

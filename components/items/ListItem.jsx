@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { Component } from "react";
-import { Image, View, StyleSheet, Text, TouchableOpacity, Dimensions,UIManager, LayoutAnimation, Platform } from "react-native";
+import { Image, View, StyleSheet, Text, TouchableOpacity, Dimensions, LayoutAnimation } from "react-native";
 
 export default class ListItem extends Component{
     constructor(props){
@@ -19,6 +19,8 @@ export default class ListItem extends Component{
     componentDidMount(){
         if(!this.props.paused){
             this.checkStats();
+        }else{
+            this.updateProgress();
         }
     }
 
@@ -148,14 +150,13 @@ export default class ListItem extends Component{
 
     render(){
         return(
-            <TouchableOpacity onPress = {this.increaseToday} style={{marginTop:10}}>
+            <TouchableOpacity onPress = {this.increaseToday} style={{marginTop:10, marginLeft:this.props.list ? 0 : 5, marginRight:this.props.list ? 0 : 5}}>
                 <View>
-                    <View style={{backgroundColor:this.state.scaleFactor > 0 ? this.state.color : "#00000000", width:((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1, height:76.1, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
-
-                    <View style={[styles.container, {zIndex:1, marginTop:-76}]}>
+                    <View style={this.props.list ? {backgroundColor:this.state.scaleFactor > 0 ? this.state.color : "#00000000", width:((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1, height:76.1, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0} : {backgroundColor:this.state.color, width:((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor, height:this.props.edit ? 120 : 120, zIndex:0, borderTopLeftRadius:10, borderBottomLeftRadius:10, borderRadius: (this.state.today==this.state.daily) ? 10 : 0}}></View>
+                    <View style={[styles.container, this.props.list ? {zIndex:1, marginTop:-76,flexDirection: this.props.list ? "row" : "column"} : {zIndex:1, marginTop:this.props.edit ? -120 : -120, width:((Dimensions.get("window").width/2) - 20), height:this.props.edit ? 120 : 120, alignItems:"center"}]}>
                         <View style={{flexDirection:"row", alignItems:"center"}}>
                             
-                            <View style={styles.main}>
+                            <View style={[styles.main, this.props.list ? {} : {alignItems:"center"}]}>
                                 <Text style={{fontSize:26}}>{this.state.title}</Text>
                                 <Text style={{fontSize:16}}>{this.state.progress}</Text>
                             </View>
@@ -171,7 +172,6 @@ export default class ListItem extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection: "row",
         justifyContent:"space-between",
         padding:10,
         borderRadius:10,

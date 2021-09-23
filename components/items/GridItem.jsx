@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { Component } from "react";
-import { Image, View, StyleSheet, Text, TouchableOpacity, Dimensions,UIManager, LayoutAnimation, Platform } from "react-native";
-import Colours from "../Colours";
+import { Image, View, StyleSheet, Text, TouchableOpacity, Dimensions, LayoutAnimation } from "react-native";
 
 export default class ListItem extends Component{
     constructor(props){
