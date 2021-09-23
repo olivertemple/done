@@ -8,6 +8,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListItem from './components/items/ListItem';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Settings from './components/Settings';
+import * as Font from 'expo-font';
+import AppLoading from "expo-app-loading";
+
+let customFonts = {
+  "regular":require("./assets/fonts/BalsamiqSans-Regular.ttf"),
+  "bold":require("./assets/fonts/BalsamiqSans-Bold.ttf")
+}
 
 if (Platform.OS === 'android') {  
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -26,8 +33,10 @@ export default class App extends Component{
       list:true,
       confetti:false,
       animations:true,
-      paused:null
+      paused:null,
+      fontsLoaded:false
     }
+
 
     this.updateName = this.updateName.bind(this);
     this.setName = this.setName.bind(this);
@@ -71,6 +80,15 @@ export default class App extends Component{
     })
 
     this.updateHabits();
+  }
+
+  async _loadFontsAsync(){
+    await Font.loadAsync(customFonts);
+    this.setState({fontsLoaded:true})
+  }
+
+  componentDidMount(){
+    this._loadFontsAsync();
   }
 
   showConfetti(){
@@ -191,16 +209,16 @@ export default class App extends Component{
   menuBar(){
     if (!this.state.edit){
       return(
-        <View style={{flexDirection:"row", justifyContent:"space-between", padding:10, alignItems:"center"}}>
-          <TouchableOpacity style={{margin:10}} onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
-            <Image source={require("./assets/settings.png")} style={{height:25, width:25}}></Image>
+        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+          <TouchableOpacity onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
+            <Image source={require("./assets/settings.png")} style={{height:25, width:25, tintColor:"#C5C5C5"}}></Image>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.add}>
-            <Image source={require("./assets/add(1).png")} style={{width:20, height:20}}></Image>
+            <Image source={require("./assets/add(1).png")} style={{width:20, height:20, tintColor:"#C5C5C5"}}></Image>
           </TouchableOpacity>
     
           <TouchableOpacity onPress = {this.toggleGrid}>
-            <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={{width:20, height:20}}></Image>
+            <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={{width:20, height:20, tintColor:"#C5C5C5"}}></Image>
           </TouchableOpacity>
         </View>
       )
@@ -227,6 +245,7 @@ export default class App extends Component{
       }else{
         text = "Good evening"
       }
+      /*
       return(
         <View style={{flexDirection:"row", justifyContent:"space-between"}}>
           <View>
@@ -235,6 +254,13 @@ export default class App extends Component{
           </View>
         </View>
 
+      )*/
+      return(
+        <View style={{alignItems:"center"}}>
+          <View style={{alignItems:"center"}}>
+            <Text style={{fontSize:40, fontFamily:"bold"}}>Done</Text>
+          </View>
+        </View>
       )
     }else{
       return(
@@ -281,7 +307,7 @@ export default class App extends Component{
           <View style={{padding:10, justifyContent:"space-between", height:Dimensions.get("window").height}}>
             <View>
               <this.titleBar />
-              <ScrollView style={{height:Dimensions.get("window").height - 140}}>
+              <ScrollView style={{height:Dimensions.get("window").height - 150, marginTop:10}}>
                 <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                   {Object.keys(this.state.habits).map(key => {
                     return(
@@ -342,13 +368,18 @@ export default class App extends Component{
     }
   }
   render(){
-    return(
-      <View style={{marginTop:30}}>
-          <StatusBar style="auto" />
-          <this.confetti />
-          <this.renderScreens />
-      </View>
-    )
+    if (this.state.fontsLoaded){
+      return(
+        <View style={{marginTop:30}}>
+            <StatusBar style="auto" />
+            <this.confetti />
+            <this.renderScreens />
+        </View>
+      )
+    }else{
+      return <AppLoading />
+    }
+    
   } 
 }
 
@@ -366,10 +397,11 @@ const styles = StyleSheet.create({
   },
   text1:{
     fontSize:26,
-    fontWeight:"bold"
+    fontFamily:"bold"
   },
   text2:{
-    fontSize:16
+    fontSize:16,
+    fontFamily:"regular"
   },
   button:{
     borderRadius:10,

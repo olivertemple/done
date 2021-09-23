@@ -132,7 +132,7 @@ export default class ListItem extends Component{
         if (!this.props.edit){
             return(
                 <View style={{flexDirection:"row", alignItems:"center"}}>
-                    <Text style={{fontSize:26}}>{this.state.streak}</Text>
+                    <Text style={{fontSize:26, fontFamily:"regular"}}>{this.state.streak}</Text>
                     <Image source={require("../../assets/check.png")} style={{width:20, height:20}}></Image>
                 </View>
             )
@@ -176,8 +176,8 @@ export default class ListItem extends Component{
                         <View style={[styles.container, this.props.list ? {zIndex:1,flexDirection: this.props.list ? "row" : "column"} : {zIndex:1, width:((Dimensions.get("window").width/2) - 20), alignItems:"center"}]}>
                             <View style={{flexDirection:"row", alignItems:"center", maxWidth:this.props.list ? ((Dimensions.get("window").width) - 80) :((Dimensions.get("window").width/2) - 20) }}>
                                 <View style={[styles.main, this.props.list ? {} : {alignItems:"center"}]}>
-                                    <Text style={{fontSize:26}}>{this.state.title}</Text>
-                                    <Text style={{fontSize:16}}>{this.state.progress}</Text>
+                                    <Text style={{fontSize:26, fontFamily:"regular"}}>{this.state.title}</Text>
+                                    <Text style={{fontSize:16, fontFamily:"regular"}}>{this.state.progress}</Text>
                                 </View>
                             </View>
                             <this.right />

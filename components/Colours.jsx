@@ -80,7 +80,7 @@ export default class Colours extends Component{
                         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
                             <View style={{flexDirection:"row", alignItems:"center"}}>
                                 <View style={{height:10, width:10, borderRadius:100, backgroundColor:this.state.selectedColour}}></View>
-                                <Text style={{fontSize:16, marginLeft:5}}>{this.state.colour ? this.state.colour : "select"}</Text>
+                                <Text style={{fontSize:16, marginLeft:5, fontFamily:"regular"}}>{this.state.colour ? this.state.colour : "select"}</Text>
                             </View>
                             <Animated.Image source={require("../assets/arrow.png")} style={{marginLeft:10, height:10, width:10, marginRight:5, marginTop:2.5, transform:[{rotate:this.interpolateRotating}]}}></Animated.Image>
                         </View>
@@ -92,7 +92,7 @@ export default class Colours extends Component{
                             <TouchableOpacity key={value.name} onPress={() => {this.setColour(value)}}>
                                 <View style={{flexDirection:"row", alignItems:"center", margin:10}}>
                                     <View style={{height:10, width:10, borderRadius:100, backgroundColor:value.code}}></View>
-                                    <Text style={{marginLeft:5, fontSize:16}}>{value.name}</Text>
+                                    <Text style={{marginLeft:5, fontSize:16, fontFamily:"regular"}}>{value.name}</Text>
                                 </View>
                             </TouchableOpacity>
                         )
