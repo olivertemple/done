@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./assets/iconmedium-large.png"><br><br>
-  <img src="https://img.shields.io/badge/version-0.1.1-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/version-0.1.3-blue?style=for-the-badge">
   <img src="https://img.shields.io/badge/app-react_native-blue?style=for-the-badge&logo=react">
 </div>
 

@@ -197,7 +197,7 @@ export default class ListItem extends Component{
                                 borderRadius: (this.state.today==this.state.daily) ? 10 : 0}]}>
                                 </View>
 
-                                <View style={[{backgroundColor:"#E8E8E8", borderRadius:this.state.scaleFactor > 0 ? 0 : 10, borderTopRightRadius:10, borderBottomRightRadius:10},this.props.list ? {
+                                <View style={[{backgroundColor:this.state.theme === "light" ? "#E8E8E8" : "#E8E8E8", borderRadius:this.state.scaleFactor > 0 ? 0 : 10, borderTopRightRadius:10, borderBottomRightRadius:10},this.props.list ? {
                                 width:(Dimensions.get("window").width - 20) - (((Dimensions.get("window").width - 20)*this.state.scaleFactor)+0.1)
                             } : {
                                 width: (Dimensions.get("window").width/2 - 20) - (((Dimensions.get("window").width/2) - 20)*this.state.scaleFactor)

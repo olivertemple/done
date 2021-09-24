@@ -37,59 +37,63 @@ export default class Settings extends Component{
     
     render(){
         return(
-            <View style={{padding:20, justifyContent:"space-between", height:Dimensions.get("window").height, elevation:0}} >
+            <View style={{padding:20, justifyContent:"space-between", height:Dimensions.get("window").height, elevation:0, backgroundColor:this.props.theme === "light" ? "white" : "#141414"}} >
                 <View>
                     <View>
-                        <Text style={{fontSize:26, fontFamily:"bold"}}>Settings</Text>
+                        <Text style={{fontSize:26, fontFamily:"bold", color:this.props.theme === "light" ? "black" : "#E1E1E1"}}>Settings</Text>
                     </View>
                     <View style={{gap:20, marginTop:10}}>
                         {this.state.pp ? <PP cancel={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);this.setState({pp:false})}}/> : null}
                         <View>
-                            <Text style={{fontSize:20, fontFamily:"regular"}}>Name:</Text>
-                            <TextInput placeholder={this.state.name} style={{fontSize:16, padding:10, borderRadius:5, backgroundColor:"#E8E8E8", marginTop:5, fontFamily:"regular"}} onChangeText={(text) => this.updateName(text)}></TextInput>
+                            <Text style={{fontSize:20, fontFamily:"regular",color:this.props.theme === "light" ? "black" : "#E1E1E1"}}>Name:</Text>
+                            <TextInput placeholder={this.state.name} style={{fontSize:16, padding:10, borderRadius:5, backgroundColor:this.props.theme==="light" ? "#E8E8E8" : "#282828", marginTop:5, fontFamily:"regular", color:this.props.theme==="light" ? "black" : "#E3E3E3"}} onChangeText={(text) => this.updateName(text)}></TextInput>
                         </View>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", marginTop:20}}>
-                            <Text style={{fontSize:20, fontFamily:"regular"}}>Reduce animations:</Text>
+                            <Text style={{fontSize:20, fontFamily:"regular", color:this.props.theme === "light" ? "black" : "#E1E1E1"}}>Reduce animations:</Text>
                             <Switch value={!this.state.animations} onValueChange={this.animationSwitch}></Switch>
+                        </View>
+                        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", marginTop:20}}>
+                            <Text style={{fontSize:20, fontFamily:"regular", color:this.props.theme === "light" ? "black" : "#E1E1E1"}}>Dark theme:</Text>
+                            <Switch value={(this.props.theme==="light" ? false : true)} onValueChange={this.props.toggleTheme}></Switch>
                         </View>
                         <ScrollView style={{marginTop:10}}>
                             <View style={{marginTop:10}}>
                                 <TouchableOpacity onPress={() => {Linking.openURL("https://github.com/olivertemple/done")}}>
-                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:"#E8E8E8"}}>
-                                        <Image source={require("../assets/GitHub-Mark-Light-64px.png")} style={{width:50, height:50, tintColor:"black"}}></Image>
-                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10}}>GitHub</Text>
+                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:this.props.theme === "light" ? "#E8E8E8" : "#282828"}}>
+                                        <Image source={require("../assets/GitHub-Mark-Light-64px.png")} style={{width:50, height:50, tintColor:this.props.theme === "light" ? "black" : "#E3E3E3"}}></Image>
+                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10, color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>GitHub</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
                             <View style={{marginTop:10}}>
                                 <TouchableOpacity onPress={() => {Linking.openURL("https://github.com/olivertemple/done/issues/new")}}>
-                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:"#E8E8E8"}}>
+                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:this.props.theme === "light" ? "#E8E8E8" : "#282828"}}>
                                         <Image source={require("../assets/bug.png")} style={{width:50, height:50, tintColor:"red"}}></Image>
-                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10}}>Report a bug</Text>
+                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10, color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>Report a bug</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
                             <View style={{marginTop:10}}>
                                 <TouchableOpacity onPress={() => {Linking.openURL("mailto:oliver.temple.dev@gmail.com")}}>
-                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:"#E8E8E8"}}>
-                                        <Image source={require("../assets/email.png")} style={{width:50, height:50}}></Image>
-                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10}}>Send me an email</Text>
+                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:this.props.theme === "light" ? "#E8E8E8" : "#282828"}}>
+                                        <Image source={require("../assets/email.png")} style={{width:50, height:50, tintColor:this.props.theme === "light" ? "black" : "#E3E3E3"}}></Image>
+                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10, color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>Send me an email</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
                             <View style={{marginTop:10}}>
                                 <TouchableOpacity onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);this.setState({pp:true})}}>
-                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:"#E8E8E8"}}>
-                                        <Image source={require("../assets/shield-with-lock.png")} style={{width:50, height:50}}></Image>
-                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10}}>Privacy policy</Text>
+                                    <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:this.props.theme === "light" ? "#E8E8E8" : "#282828"}}>
+                                        <Image source={require("../assets/shield-with-lock.png")} style={{width:50, height:50, tintColor:this.props.theme === "light" ? "black" : "#E3E3E3"}}></Image>
+                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10, color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>Privacy policy</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
                             <View style={{marginTop:10}}>
                                 <TouchableOpacity onPress={() => {Linking.openURL("https://www.buymeacoffee.com/olivertemple")}}>
-                                <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:"#E8E8E8", tintColor:"#E8E8E8"}}>
+                                <View style={{borderWidth:0, borderColor:"#171516", padding:10, borderRadius:5, flexDirection:"row", gap:10, alignItems:"center", backgroundColor:this.props.theme === "light" ? "#E8E8E8" : "#282828"}}>
                                         <Image source={require("../assets/bmc-logo.png")} style={{width:50, height:50}}></Image>
-                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10}}>Buy me a coffee</Text>
+                                        <Text style={{fontSize:26, fontFamily:"bold", marginLeft:10, color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>Buy me a coffee</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>

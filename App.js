@@ -27,13 +27,14 @@ export default class App extends Component{
     this.state = {
       name:null,
       habits:null,
-      screen:null,
+      screen:"add",
       edit:false,
       list:true,
       confetti:false,
       animations:true,
       paused:null,
-      fontsLoaded:false
+      fontsLoaded:false,
+      theme:"dark"
     }
 
 
@@ -54,6 +55,7 @@ export default class App extends Component{
     this.pauseHabit = this.pauseHabit.bind(this);
     this.play = this.play.bind(this);
     this.handelBackButton = this.handelBackButton.bind(this);
+    this.toggleTheme = this.toggleTheme.bind(this);
 
     this.getName().then(name => {
       if (name){
@@ -96,6 +98,13 @@ export default class App extends Component{
     BackHandler.removeEventListener("hardwareBackPress", this.handelBackButton)
   }
 
+  toggleTheme(){
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({
+      theme: (this.state.theme==="dark" ? "light" : "dark")
+    })
+  }
+
   handelBackButton(){
     if (this.state.screen !== null){
       this.setState({
@@ -112,7 +121,7 @@ export default class App extends Component{
       })
     }
     
-  }
+  }    
 
   updateHabits(){
     this.getHabits().then(habits => {
@@ -121,8 +130,6 @@ export default class App extends Component{
       })
     })
   }
-
- 
 
   updateName(name){
     this.state.name = name;
@@ -162,8 +169,8 @@ export default class App extends Component{
 
   pauseHabit(name){
     let state = this.state;
-    let habit = state.habits[name]
-    delete state.habits[name]
+    let habit = state.habits[name];
+    delete state.habits[name];
     if (state.paused){ 
       state.paused[name] = habit
     }else{
@@ -250,7 +257,7 @@ export default class App extends Component{
       return(
         <View style={{alignItems:"center"}}>
           <View style={{alignItems:"center"}}>
-            <Text style={{fontSize:40, fontFamily:"bold"}}>Done</Text>
+            <Text style={{fontSize:40, fontFamily:"bold", color:this.state.theme === "dark" ? "#E0E0E0" : "black"}}>Done</Text>
           </View>
         </View>
       )
@@ -303,7 +310,7 @@ export default class App extends Component{
                 <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                   {Object.keys(this.state.habits).map(key => {
                     return(
-                      <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit} list={this.state.list}></ListItem>
+                      <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit} list={this.state.list} theme={this.state.theme}></ListItem>
                     )
                   })}
                 </View>
@@ -313,7 +320,7 @@ export default class App extends Component{
                         <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                           {Object.keys(this.state.paused).map(key => {
                             return(
-                              <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list}></ListItem>
+                              <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list} theme={this.state.theme}></ListItem>
                             )
                           })}
                         </View>
@@ -340,12 +347,12 @@ export default class App extends Component{
     }else if (this.state.screen === "add"){
       return(
         <View style={{height:Dimensions.get("window").height}}>
-          <Add cancel={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:null})}} addHabit={this.addHabit}></Add>
+          <Add cancel={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:null})}} addHabit={this.addHabit} theme={this.state.theme}></Add>
         </View>
       )
     }else if (this.state.screen === "settings"){
       return(
-        <Settings updateName={(name) => {this.setState({name:name})}} updateAnimations={(animations) => {this.setState({animations:eval(animations)})}} exit={() =>{this.setState({screen:null})}}></Settings>
+        <Settings updateName={(name) => {this.setState({name:name})}} updateAnimations={(animations) => {this.setState({animations:eval(animations)})}} exit={() =>{this.setState({screen:null})}} theme={this.state.theme} toggleTheme={this.toggleTheme}></Settings>
       )
     }
     
@@ -364,7 +371,7 @@ export default class App extends Component{
   render(){
     if (this.state.fontsLoaded){
       return(
-        <View style={{marginTop:30}}>
+        <View style={{marginTop:30, backgroundColor:this.state.theme === "dark" ? "#141414" : "white"}}>
             <StatusBar style="auto" />
             <this.confetti />
             <this.renderScreens />
@@ -409,4 +416,3 @@ const styles = StyleSheet.create({
     width:30
   }
 });
-

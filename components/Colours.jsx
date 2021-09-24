@@ -69,20 +69,20 @@ export default class Colours extends Component{
         this.setState({colour:value.name, expanded:!this.state.expanded, selectedColour:value.code})
         this.props.setColour(value)
     }
-
-    
-
+    /*
+    backgroundColor:this.props.theme==="light" ? "#E8E8E8" : "#282828", color:this.props.theme==="light" ? "black" : "#E3E3E3"
+*/
     render(){
         return(
-            <View style={{padding:10, borderRadius:5, backgroundColor:"#E3E3E3", marginTop:5}}>
+            <View style={{padding:10, borderRadius:5, backgroundColor:this.props.theme==="light" ? "#E3E3E3" : "#282828", marginTop:5}}>
                 <View>
                     <TouchableOpacity onPress={this.handleRotation}>
                         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
                             <View style={{flexDirection:"row", alignItems:"center"}}>
                                 <View style={{height:10, width:10, borderRadius:100, backgroundColor:this.state.selectedColour}}></View>
-                                <Text style={{fontSize:16, marginLeft:5, fontFamily:"regular"}}>{this.state.colour ? this.state.colour : "select"}</Text>
+                                <Text style={{fontSize:16, marginLeft:5, fontFamily:"regular",color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>{this.state.colour ? this.state.colour : "select"}</Text>
                             </View>
-                            <Animated.Image source={require("../assets/arrow.png")} style={{marginLeft:10, height:10, width:10, marginRight:5, marginTop:2.5, transform:[{rotate:this.interpolateRotating}]}}></Animated.Image>
+                            <Animated.Image source={require("../assets/arrow.png")} style={{marginLeft:10, height:10, width:10, marginRight:5, marginTop:2.5, tintColor:this.props.theme==="light" ? "black" : "#E3E3E3", transform:[{rotate:this.interpolateRotating}]}}></Animated.Image>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -92,7 +92,7 @@ export default class Colours extends Component{
                             <TouchableOpacity key={value.name} onPress={() => {this.setColour(value)}}>
                                 <View style={{flexDirection:"row", alignItems:"center", margin:10}}>
                                     <View style={{height:10, width:10, borderRadius:100, backgroundColor:value.code}}></View>
-                                    <Text style={{marginLeft:5, fontSize:16, fontFamily:"regular"}}>{value.name}</Text>
+                                    <Text style={{marginLeft:5, fontSize:16, fontFamily:"regular", color:this.props.theme==="light" ? "black" : "#E3E3E3"}}>{value.name}</Text>
                                 </View>
                             </TouchableOpacity>
                         )
