@@ -1,4 +1,7 @@
-<div align="center">  
+<div align="center">
+  <img src="./assets/iconlarge.png">
+</div>
+<div align="center" style="margin:20px">  
   <img src="https://img.shields.io/badge/version-0.1.1-blue?style=for-the-badge">
   <img src="https://img.shields.io/badge/app-react_native-blue?style=for-the-badge&logo=react">
 </div>
