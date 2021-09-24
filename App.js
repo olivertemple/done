@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, UIManager, LayoutAnimation, Platform, TouchableWithoutFeedbackBase } from 'react-native';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, UIManager, LayoutAnimation, Platform, BackHandler } from 'react-native';
 import Add from './components/Add';
 import { StatusBar } from 'expo-status-bar';
 import Button from "./components/Button";
@@ -10,7 +10,6 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 import Settings from './components/Settings';
 import * as Font from 'expo-font';
 import AppLoading from "expo-app-loading";
-
 let customFonts = {
   "regular":require("./assets/fonts/BalsamiqSans-Regular.ttf"),
   "bold":require("./assets/fonts/BalsamiqSans-Bold.ttf")
@@ -54,6 +53,7 @@ export default class App extends Component{
     this.toggleGrid = this.toggleGrid.bind(this);
     this.pauseHabit = this.pauseHabit.bind(this);
     this.play = this.play.bind(this);
+    this.handelBackButton = this.handelBackButton.bind(this);
 
     this.getName().then(name => {
       if (name){
@@ -89,6 +89,20 @@ export default class App extends Component{
 
   componentDidMount(){
     this._loadFontsAsync();
+    BackHandler.addEventListener("hardwareBackPress", this.handelBackButton)
+  }
+
+  componentWillUnmount(){
+    BackHandler.removeEventListener("hardwareBackPress", this.handelBackButton)
+  }
+
+  handelBackButton(){
+    if (this.state.screen !== null){
+      this.setState({
+        screen:null
+      })
+    }
+    return true
   }
 
   showConfetti(){
