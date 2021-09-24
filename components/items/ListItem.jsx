@@ -152,7 +152,7 @@ export default class ListItem extends Component{
     renderLeft(){
         return(
             <View style={{justifyContent:"center", alignItems:"center", margin:30}}>
-                <Image source={this.props.paused ? require("../../assets/play.png") : require("../../assets/pause.png")} style={{height:20, width:20}}></Image>
+                <Image source={this.props.paused ? require("../../assets/play.png") : require("../../assets/pause.png")} style={{height:20, width:20, tintColor:this.props.theme==="dark" ? "white" : "black"}}></Image>
             </View>
         )
     }
@@ -160,7 +160,7 @@ export default class ListItem extends Component{
     renderRight(){
         return(
             <View style={{justifyContent:"center", alignItems:"center", margin:30}}>
-                <Image source={require("../../assets/trash.png")} style={{height:20, width:20, alignSelf:"flex-start"}}></Image>
+                <Image source={require("../../assets/trash.png")} style={{height:20, width:20, alignSelf:"flex-start", tintColor:this.props.theme==="dark" ? "white" : "black"}}></Image>
             </View>
         )
     }

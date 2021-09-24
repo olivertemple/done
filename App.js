@@ -27,7 +27,7 @@ export default class App extends Component{
     this.state = {
       name:null,
       habits:null,
-      screen:"add",
+      screen:null,
       edit:false,
       list:true,
       confetti:false,
@@ -316,7 +316,7 @@ export default class App extends Component{
                 </View>
                 {(Object.keys(this.state.paused).length > 0) ? (
                     <View>
-                        <Text style={{fontSize:26}}>Paused</Text>
+                        <Text style={{fontSize:26, color:this.state.theme==="dark" ? "#E3E3E3" : "black"}}>Paused</Text>
                         <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                           {Object.keys(this.state.paused).map(key => {
                             return(
@@ -372,9 +372,9 @@ export default class App extends Component{
     if (this.state.fontsLoaded){
       return(
         <View style={{marginTop:30, backgroundColor:this.state.theme === "dark" ? "#141414" : "white"}}>
-            <StatusBar style="auto" />
             <this.confetti />
             <this.renderScreens />
+            <StatusBar style="auto" />
         </View>
       )
     }else{

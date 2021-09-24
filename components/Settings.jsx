@@ -46,7 +46,7 @@ export default class Settings extends Component{
                         {this.state.pp ? <PP cancel={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);this.setState({pp:false})}}/> : null}
                         <View>
                             <Text style={{fontSize:20, fontFamily:"regular",color:this.props.theme === "light" ? "black" : "#E1E1E1"}}>Name:</Text>
-                            <TextInput placeholder={this.state.name} style={{fontSize:16, padding:10, borderRadius:5, backgroundColor:this.props.theme==="light" ? "#E8E8E8" : "#282828", marginTop:5, fontFamily:"regular", color:this.props.theme==="light" ? "black" : "#E3E3E3"}} onChangeText={(text) => this.updateName(text)}></TextInput>
+                            <TextInput placeholder={this.state.name} style={{fontSize:16, padding:10, borderRadius:5, backgroundColor:this.props.theme==="light" ? "#E8E8E8" : "#282828", marginTop:5, fontFamily:"regular"}} onChangeText={(text) => this.updateName(text)} placeholderTextColor={this.props.theme==="dark" ? "#E3E3E3" : "grey"}></TextInput>
                         </View>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", marginTop:20}}>
                             <Text style={{fontSize:20, fontFamily:"regular", color:this.props.theme === "light" ? "black" : "#E1E1E1"}}>Reduce animations:</Text>
