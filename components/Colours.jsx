@@ -13,12 +13,12 @@ export default class Colours extends Component{
         }
 
         this.colours = [
-            {name:"Light cyan", code:"#E0FEFE"},
-            {name:"Crayola's periwinkle", code:"#C7CEEA"},
-            {name:"Very pale orange", code:"#FFDAC1"},
-            {name:"Light salmon pink", code:"#FF9AA2"},
+            {name:"Cyan", code:"#E0FEFE"},
+            {name:"Pastel purple", code:"#C7CEEA"},
+            {name:"Light orange", code:"#FFDAC1"},
+            {name:"Salmon", code:"#FF9AA2"},
             {name:"Light yellow", code:"#FFFFD8"},
-            {name:"Magic mint", code:"#B5EAD7"},
+            {name:"Mint", code:"#B5EAD7"},
             {name:"Blue", code:"#266EF6"},
             {name:"Purple", code:"#DF00FF"},
             {name:"Orange", code:"#FF8B00"},
