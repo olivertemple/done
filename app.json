@@ -2,7 +2,7 @@
   "expo": {
     "name": "Done",
     "slug": "Done",
-    "version": "1.0.0",
+    "version": "0.1.4",
     "assetBundlePatterns": [
       "**/*"
     ],
