@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/iconlarge.png">
+  <img src="./assets/iconmedium-large.png">
 </div>
 <div align="center" style="margin:20px">  
   <img src="https://img.shields.io/badge/version-0.1.1-blue?style=for-the-badge">
