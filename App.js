@@ -92,7 +92,6 @@ export default class App extends Component{
   }
 
   showConfetti(){
-    console.log(this.state)
     if (this.state.animations){
       this.setState({
         confetti:true
@@ -148,7 +147,6 @@ export default class App extends Component{
   }
 
   pauseHabit(name){
-    console.log(name)
     let state = this.state;
     let habit = state.habits[name]
     delete state.habits[name]
@@ -209,16 +207,15 @@ export default class App extends Component{
   menuBar(){
     if (!this.state.edit){
       return(
-        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", padding:5}}>
           <TouchableOpacity onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
-            <Image source={require("./assets/settings.png")} style={{height:25, width:25, tintColor:"#C5C5C5"}}></Image>
+            <Image source={require("./assets/settings.png")} style={{height:30, width:30, tintColor:"#C5C5C5"}}></Image>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.add}>
-            <Image source={require("./assets/add(1).png")} style={{width:20, height:20, tintColor:"#C5C5C5"}}></Image>
+            <Image source={require("./assets/add(1).png")} style={{width:25, height:25, tintColor:"#C5C5C5"}}></Image>
           </TouchableOpacity>
-    
           <TouchableOpacity onPress = {this.toggleGrid}>
-            <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={{width:20, height:20, tintColor:"#C5C5C5"}}></Image>
+            <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={{width:25, height:25, tintColor:"#C5C5C5"}}></Image>
           </TouchableOpacity>
         </View>
       )
@@ -236,25 +233,6 @@ export default class App extends Component{
 
   titleBar(){
     if (!this.state.edit){
-      let time = new Date().getHours();
-      let text;
-      if (time < 12){
-        text = "Good morning"
-      }else if (time >=12 && time < 17){
-        text = "Good afternoon"
-      }else{
-        text = "Good evening"
-      }
-      /*
-      return(
-        <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-          <View>
-            <Text style={{fontSize:26, fontWeight:"bold"}}>{text},</Text>
-            <Text style={{fontSize:26, fontWeight:"bold"}}>{this.state.name}</Text>
-          </View>
-        </View>
-
-      )*/
       return(
         <View style={{alignItems:"center"}}>
           <View style={{alignItems:"center"}}>
@@ -318,11 +296,13 @@ export default class App extends Component{
                 {(Object.keys(this.state.paused).length > 0) ? (
                     <View>
                         <Text style={{fontSize:26}}>Paused</Text>
-                        {Object.keys(this.state.paused).map(key => {
-                          return(
-                            <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list}></ListItem>
-                          )
-                        })}
+                        <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
+                          {Object.keys(this.state.paused).map(key => {
+                            return(
+                              <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list}></ListItem>
+                            )
+                          })}
+                        </View>
                     </View>
                 ) : null}
               </ScrollView>

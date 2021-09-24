@@ -37,8 +37,6 @@ export default class ListItem extends Component{
     if (this.state.timeFrame === "daily"){
         
         if (last !== todayDate){
-            console.log(last)
-            console.log(todayDate)
             this.setState({
                 today:0
             },()=>{
@@ -161,8 +159,8 @@ export default class ListItem extends Component{
 
     renderRight(){
         return(
-            <View style={{justifyContent:"center", alignItems:"center"}}>
-                <Image source={require("../../assets/trash.png")} style={{height:20, width:20}}></Image>
+            <View style={{justifyContent:"center", alignItems:"flex-start"}}>
+                <Image source={require("../../assets/trash.png")} style={{height:20, width:20, alignSelf:"flex-start"}}></Image>
             </View>
         )
     }

@@ -76,7 +76,7 @@ export default class Colours extends Component{
         return(
             <View style={{padding:10, borderRadius:5, backgroundColor:"#E3E3E3", marginTop:5}}>
                 <View>
-                    <TouchableOpacity onPress={this.handleRotation} onBlur={() => {console.log("BLUR!!")}}>
+                    <TouchableOpacity onPress={this.handleRotation}>
                         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
                             <View style={{flexDirection:"row", alignItems:"center"}}>
                                 <View style={{height:10, width:10, borderRadius:100, backgroundColor:this.state.selectedColour}}></View>
