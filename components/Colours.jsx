@@ -69,9 +69,7 @@ export default class Colours extends Component{
         this.setState({colour:value.name, expanded:!this.state.expanded, selectedColour:value.code})
         this.props.setColour(value)
     }
-    /*
-    backgroundColor:this.props.theme==="light" ? "#E8E8E8" : "#282828", color:this.props.theme==="light" ? "black" : "#E3E3E3"
-*/
+
     render(){
         return(
             <View style={{padding:10, borderRadius:5, backgroundColor:this.props.theme==="light" ? "#E3E3E3" : "#282828", marginTop:5}}>

@@ -9,7 +9,9 @@ import ListItem from './components/items/ListItem';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Settings from './components/Settings';
 import * as Font from 'expo-font';
-import AppLoading from "expo-app-loading";
+import { Appearance, AppearanceProvider} from 'react-native-appearance';
+import Styles from "./Styles/AppStyle";
+
 let customFonts = {
   "regular":require("./assets/fonts/BalsamiqSans-Regular.ttf"),
   "bold":require("./assets/fonts/BalsamiqSans-Bold.ttf")
@@ -34,9 +36,14 @@ export default class App extends Component{
       animations:true,
       paused:null,
       fontsLoaded:false,
-      theme:"dark"
+      theme:Appearance.getColorScheme(),
+      themeSetting:"system",
+      height:Dimensions.get("window").height,
+      backgroundColor:Appearance.getColorScheme() === "dark" ? "#141414" : "white",
+      color:Appearance.getColorScheme() === "dark" ? "#E0E0E0" : "black"
     }
 
+    
 
     this.updateName = this.updateName.bind(this);
     this.setName = this.setName.bind(this);
@@ -80,6 +87,20 @@ export default class App extends Component{
         this.setState({paused: JSON.parse(res)})
       }
     })
+    AsyncStorage.getItem("themeSetting").then(res => {
+      if (res!==null && res!=="system"){
+        this.setState({
+          theme:res,
+          themeSetting:res
+        })
+      }else{
+        let colourScheme = Appearance.getColorScheme();
+        this.setState({
+          theme:colourScheme ? colourScheme : "light",
+          themeSetting:"system"
+        })
+      }
+    })
 
     this.updateHabits();
   }
@@ -92,17 +113,34 @@ export default class App extends Component{
   componentDidMount(){
     this._loadFontsAsync();
     BackHandler.addEventListener("hardwareBackPress", this.handelBackButton)
+    console.log(Appearance.getColorScheme())
   }
 
   componentWillUnmount(){
     BackHandler.removeEventListener("hardwareBackPress", this.handelBackButton)
   }
 
-  toggleTheme(){
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({
-      theme: (this.state.theme==="dark" ? "light" : "dark")
-    })
+  toggleTheme(theme){
+    if (theme === "system"){
+      AsyncStorage.removeItem("theme")
+      AsyncStorage.setItem("themeSetting", "system")
+      this.state.themeSetting = "system"
+      this.setState({
+        theme:Appearance.getColorScheme(),
+        backgroundColor:Appearance.getColorScheme() === "dark" ? "#141414" : "white",
+        color:Appearance.getColorScheme() === "dark" ? "#E0E0E0" : "black"
+      })
+    }else{
+      AsyncStorage.setItem("theme",theme)
+      AsyncStorage.setItem("themeSetting",theme)
+      this.state.themeSetting = theme
+      this.setState({
+        theme:theme,
+        backgroundColor:theme === "dark" ? "#141414" : "white",
+        color:theme === "dark" ? "#E0E0E0" : "black"
+      })
+    }
+    
   }
 
   handelBackButton(){
@@ -226,49 +264,30 @@ export default class App extends Component{
   }
 
   menuBar(){
-    if (!this.state.edit){
-      return(
-        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", padding:5}}>
-          <TouchableOpacity onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
-            <Image source={require("./assets/settings.png")} style={{height:30, width:30, tintColor:"#C5C5C5"}}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.add}>
-            <Image source={require("./assets/add(1).png")} style={{width:25, height:25, tintColor:"#C5C5C5"}}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity onPress = {this.toggleGrid}>
-            <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={{width:25, height:25, tintColor:"#C5C5C5"}}></Image>
-          </TouchableOpacity>
-        </View>
-      )
-    }else{
-      return(
-        <View style={{flexDirection:"row", justifyContent:"center", padding:10}}>
-          <TouchableOpacity onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({edit:false})}}>
-            <Image source={require("./assets/check.png")} style={{width:30, height:30}}></Image>
-          </TouchableOpacity>
-        </View>
-      )
-    }
-    
+    return(
+      <View style={Styles.menuBar}>
+        <TouchableOpacity onPress={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:"settings"})}}>
+          <Image source={require("./assets/settings.png")} style={Styles.Image}></Image>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.add}>
+          <Image source={require("./assets/add(1).png")} style={Styles.Image}></Image>
+        </TouchableOpacity>
+        <TouchableOpacity onPress = {this.toggleGrid}>
+          <Image source={this.state.list ? require("./assets/visualization.png") : require("./assets/list.png")} style={Styles.Image}></Image>
+        </TouchableOpacity>
+      </View>
+    )
   }
+    
+
 
   titleBar(){
-    if (!this.state.edit){
-      return(
-        <View style={{alignItems:"center"}}>
-          <View style={{alignItems:"center"}}>
-            <Text style={{fontSize:40, fontFamily:"bold", color:this.state.theme === "dark" ? "#E0E0E0" : "black"}}>Done</Text>
-          </View>
-        </View>
-      )
-    }else{
-      return(
-        <View>
-          <Text style={styles.text1}>Edit</Text>
-          <Text style={[styles.text1], {fontWeight:"normal", fontSize:26}}>Current</Text>
-        </View>
-      )
-    }
+    return(
+      <View style={Styles.titleBar}>
+          <Text style={[Styles.large, Styles.bold, {color:this.state.color}]}>Done</Text>
+      </View>
+    )
+    
     
   }
 
@@ -287,26 +306,26 @@ export default class App extends Component{
     if (!this.state.screen){
       if (!this.state.name){
         return (
-          <View style={styles.container}>
-            <View style={styles.innerContainer}>
+          <View style={[Styles.medium, Styles.bold]}>
             <View>
-              <Text style={styles.text1}>Done.</Text>
-              <Text style={styles.text2}>The place to track all of your habits</Text>
+            <View>
+              <Text style={[Styles.medium, Styles.bold]}>Done.</Text>
+              <Text style={[Styles.small]}>The place to track all of your habits</Text>
             </View>
               <View>
-                <Text style={styles.text2}>What is your name?</Text>
-                <TextInput placeholder="name" style={[styles.input, styles.text2]} onChangeText = {(text) => {this.updateName(text)}}></TextInput>
+                <Text style={[Styles.small]}>What is your name?</Text>
+                <TextInput placeholder="name" style={[Styles.input, Styles.small]} onChangeText = {(text) => {this.updateName(text)}}></TextInput>
               </View>
             </View>
-            <Button image={require("./assets/right-arrow.png")} onPress={this.setName} style={styles.button} imageStyle={styles.image}></Button>
+            <Button image={require("./assets/right-arrow.png")} onPress={this.setName} style={Styles.button} imageStyle={Styles.image}></Button>
           </View>
         );
       }else if (this.state.habits){
         return(
-          <View style={{padding:10, justifyContent:"space-between", height:Dimensions.get("window").height}}>
+          <View style={[Styles.habitsContainer, {height:this.state.height}]}>
             <View>
               <this.titleBar />
-              <ScrollView style={{height:Dimensions.get("window").height - 150, marginTop:10}}>
+              <ScrollView style={[Styles.habitsScroll, {height:this.state.height - 150}]}>
                 <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                   {Object.keys(this.state.habits).map(key => {
                     return(
@@ -314,9 +333,9 @@ export default class App extends Component{
                     )
                   })}
                 </View>
-                {(Object.keys(this.state.paused).length > 0) ? (
+                {this.state.paused ? (Object.keys(this.state.paused).length > 0) ? (
                     <View>
-                        <Text style={{fontSize:26, color:this.state.theme==="dark" ? "#E3E3E3" : "black"}}>Paused</Text>
+                        <Text style={[Styles.medium, {color:this.state.color}]}>Paused</Text>
                         <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
                           {Object.keys(this.state.paused).map(key => {
                             return(
@@ -325,7 +344,9 @@ export default class App extends Component{
                           })}
                         </View>
                     </View>
-                ) : null}
+                ) : null
+                : null}
+                
               </ScrollView>
             </View>
             <this.menuBar />
@@ -333,26 +354,18 @@ export default class App extends Component{
         )
       }else{
         return(
-          <View style={{padding:10, justifyContent:"space-between", height:Dimensions.get("window").height}}>
-            <View style={{gap:10}}>
-              <this.titleBar />
-              <Text style={{fontSize:20}}>
-                Add some habits to get started
-              </Text>
-            </View>
-            <this.menuBar />
-          </View>
+          null
         )
       }
     }else if (this.state.screen === "add"){
       return(
-        <View style={{height:Dimensions.get("window").height}}>
+        <View style={{height:this.state.height}}>
           <Add cancel={() => {LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); this.setState({screen:null})}} addHabit={this.addHabit} theme={this.state.theme}></Add>
         </View>
       )
     }else if (this.state.screen === "settings"){
       return(
-        <Settings updateName={(name) => {this.setState({name:name})}} updateAnimations={(animations) => {this.setState({animations:eval(animations)})}} exit={() =>{this.setState({screen:null})}} theme={this.state.theme} toggleTheme={this.toggleTheme}></Settings>
+        <Settings updateName={(name) => {this.setState({name:name})}} updateAnimations={(animations) => {this.setState({animations:eval(animations)})}} exit={() =>{this.setState({screen:null})}} theme={this.state.theme} toggleTheme={this.toggleTheme} themeSetting={this.state.themeSetting}></Settings>
       )
     }
     
@@ -371,48 +384,17 @@ export default class App extends Component{
   render(){
     if (this.state.fontsLoaded){
       return(
-        <View style={{marginTop:30, backgroundColor:this.state.theme === "dark" ? "#141414" : "white"}}>
-            <this.confetti />
-            <this.renderScreens />
-            <StatusBar style="auto" />
-        </View>
+        <AppearanceProvider>
+          <View style={{marginTop:Platform.OS==="android" ? 30 : 0, backgroundColor:this.state.backgroundColor}}>
+              <this.confetti />
+              <this.renderScreens />
+              <StatusBar style="auto" />
+          </View>
+        </AppearanceProvider>
       )
     }else{
-      return <AppLoading />
+      return null
     }
     
   } 
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding:20,
-    justifyContent:"space-between",
-    height:Dimensions.get("window").height
-  },
-  innerContainer:{
-  },
-  input:{
-    borderBottomColor:"#00000050",
-    borderBottomWidth:2
-  },
-  text1:{
-    fontSize:26,
-    fontFamily:"bold"
-  },
-  text2:{
-    fontSize:16,
-    fontFamily:"regular"
-  },
-  button:{
-    borderRadius:10,
-    alignItems:"center",
-    borderColor:"black",
-    borderWidth:1,
-    padding:10
-  },
-  image:{
-    height:30,
-    width:30
-  }
-});
