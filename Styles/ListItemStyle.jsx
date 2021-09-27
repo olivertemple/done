@@ -5,7 +5,7 @@ export default StyleSheet.create({
         height:20,
         width:20
     },
-    Swipe:{
+    swipe:{
         justifyContent:"center",
         alignItems:"center",
         margin:30
@@ -13,17 +13,15 @@ export default StyleSheet.create({
     container:{
         marginTop:10,
         borderRadius:10,
-        flex:1,
-        flexDirection:"column",
-        maxHeight:2000,
-        minHeight:76.1
+        flex:1
     },
     contentContainer:{
         justifyContent:"space-between",
         padding:10,
         borderRadius:10,
-        borderWidth:0,
-        borderColor:"black",
+        flexDirection:"column",
+        maxHeight:2000,
+        minHeight:76.1
     },
     innerContentContainer:{
         flexDirection:"column",

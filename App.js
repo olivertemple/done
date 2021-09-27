@@ -41,9 +41,13 @@ export default class App extends Component{
       height:Dimensions.get("window").height,
       backgroundColor:Appearance.getColorScheme() === "dark" ? "#141414" : "white",
       color:Appearance.getColorScheme() === "dark" ? "#E0E0E0" : "black"
-    }
+    }    
 
-    
+    Dimensions.addEventListener("change", () => {
+      this.setState({
+        height:Dimensions.get("window").height
+      })
+    })
 
     this.updateName = this.updateName.bind(this);
     this.setName = this.setName.bind(this);
@@ -87,6 +91,7 @@ export default class App extends Component{
         this.setState({paused: JSON.parse(res)})
       }
     })
+
     AsyncStorage.getItem("themeSetting").then(res => {
       if (res!==null && res!=="system"){
         this.setState({
@@ -385,10 +390,10 @@ export default class App extends Component{
     if (this.state.fontsLoaded){
       return(
         <AppearanceProvider>
-          <View style={{marginTop:Platform.OS==="android" ? 30 : 0, backgroundColor:this.state.backgroundColor}}>
+          <View style={{backgroundColor:this.state.backgroundColor}}>
               <this.confetti />
               <this.renderScreens />
-              <StatusBar style="auto" />
+              <StatusBar translucent={false} backgroundColor={this.state.backgroundColor} style={this.state.theme==="dark" ? "light" : "dark"} />
           </View>
         </AppearanceProvider>
       )

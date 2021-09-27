@@ -20,6 +20,12 @@ export default class ListItem extends Component{
         this.pause = this.pause.bind(this);
         this.renderLeft = this.renderLeft.bind(this);
         this.renderRight = this.renderRight.bind(this);
+
+        Dimensions.addEventListener("change", () => {
+            this.setState({
+                width:Dimensions.get("window").width
+            })
+        })
     }  
 
     componentDidMount(){
@@ -155,6 +161,7 @@ export default class ListItem extends Component{
     }
 
     render(){
+        console.log(this.state)
         this.ref = createRef(null)
         return(
             <Swipeable
@@ -171,7 +178,7 @@ export default class ListItem extends Component{
                             style={[ListItemStyle.contentContainer,{width:this.state.width - 20}, this.props.list ? {zIndex:1,flexDirection: this.props.list ? "row" : "column"} : {zIndex:1, width:this.state.width/2 - 20.5, alignItems:"center"}]}>
 
                             <View
-                                style={{flexDirection:"row", alignItems:"center", maxWidth:this.props.list ? (this.state.width - 80) :this.state.width/2 - 20}}>
+                                style={{flexDirection:"row", alignItems:"center", maxWidth:this.props.list ? (this.state.width - 80) : this.state.width/2 - 20}}>
 
                                 <View
                                     style={[ListItemStyle.innerContentContainer, this.props.list ? {} : {alignItems:"center"}]}>
@@ -196,7 +203,7 @@ export default class ListItem extends Component{
                                 </View>
 
                                 <View
-                                    style={[{backgroundColor:this.state.color, borderRadius:this.state.scaleFactor > 0 ? 0 : 10, borderTopRightRadius:10, borderBottomRightRadius:10},this.props.list ? {width:this.state.width-20 - (((this.state.width-20)*this.state.scaleFactor)+0.1)}
+                                    style={[{backgroundColor:"#E3E3E3", borderRadius:this.state.scaleFactor > 0 ? 0 : 10, borderTopRightRadius:10, borderBottomRightRadius:10},this.props.list ? {width:this.state.width-20 - (((this.state.width-20)*this.state.scaleFactor)+0.1)}
                                     :
                                     {
                                     width: (this.state.width/2 - 20) - ((this.state.width/2 - 20)*this.state.scaleFactor)}]}>
