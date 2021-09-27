@@ -37,7 +37,6 @@ export default StyleSheet.create({
     button:{
         borderRadius:10,
         alignItems:"center",
-        borderColor:"black",
         borderWidth:1,
         padding:10
     },

@@ -11,6 +11,7 @@ import Settings from './components/Settings';
 import * as Font from 'expo-font';
 import { Appearance, AppearanceProvider} from 'react-native-appearance';
 import Styles from "./Styles/AppStyle";
+import AddStyle from "./Styles/AddStyle";
 
 let customFonts = {
   "regular":require("./assets/fonts/BalsamiqSans-Regular.ttf"),
@@ -308,60 +309,60 @@ export default class App extends Component{
   }
 
   renderScreens(){
+    console.log(this.state)
     if (!this.state.screen){
-      if (!this.state.name){
-        return (
-          <View style={[Styles.medium, Styles.bold]}>
-            <View>
-            <View>
-              <Text style={[Styles.medium, Styles.bold]}>Done.</Text>
-              <Text style={[Styles.small]}>The place to track all of your habits</Text>
-            </View>
-              <View>
-                <Text style={[Styles.small]}>What is your name?</Text>
-                <TextInput placeholder="name" style={[Styles.input, Styles.small]} onChangeText = {(text) => {this.updateName(text)}}></TextInput>
-              </View>
-            </View>
-            <Button image={require("./assets/right-arrow.png")} onPress={this.setName} style={Styles.button} imageStyle={Styles.image}></Button>
-          </View>
-        );
-      }else if (this.state.habits){
-        return(
-          <View style={[Styles.habitsContainer, {height:this.state.height}]}>
-            <View>
-              <this.titleBar />
-              <ScrollView style={[Styles.habitsScroll, {height:this.state.height - 150}]}>
-                <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
-                  {Object.keys(this.state.habits).map(key => {
-                    return(
-                      <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit} list={this.state.list} theme={this.state.theme}></ListItem>
-                    )
-                  })}
-                </View>
-                {this.state.paused ? (Object.keys(this.state.paused).length > 0) ? (
+        if (!this.state.name){
+            let color = this.state.theme === "light" ? "black" : "#E1E1E1";
+            let backgroundColor = this.props.theme === "light" ? "#E8E8E8" : "#282828";
+            return (
+            <View style={[Styles.medium, Styles.bold, {justifyContent:"space-between", height:this.state.height, padding:20}]}>
+                <View>
                     <View>
-                        <Text style={[Styles.medium, {color:this.state.color}]}>Paused</Text>
-                        <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
-                          {Object.keys(this.state.paused).map(key => {
-                            return(
-                              <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list} theme={this.state.theme}></ListItem>
-                            )
-                          })}
-                        </View>
+                        <Text style={[Styles.large, Styles.bold, {color:color}]}>Done.</Text>
+                        <Text style={[Styles.small,{color:color, marginTop:10}]}>The place to track all of your habits</Text>
                     </View>
-                ) : null
-                : null}
-                
-              </ScrollView>
+                    <View style={{marginTop:50}}>
+                        <Text style={[Styles.small, {color:color}]}>What is your name?</Text>
+                        <TextInput placeholder="name" style={[AddStyle.textInput, {backgroundColor: backgroundColor,color: color}]} onChangeText = {(text) => {this.updateName(text)}}></TextInput>
+                    </View>
+                </View>
+                <Button image={require("./assets/right-arrow.png")} onPress={this.setName} style={[Styles.button, {borderColor:color}]} imageStyle={Styles.Image}></Button>
             </View>
-            <this.menuBar />
-          </View>
-        )
-      }else{
-        return(
-          null
-        )
-      }
+            );
+        }else{
+            return(
+            <View style={[Styles.habitsContainer, {height:this.state.height}]}>
+                <View>
+                <this.titleBar />
+                <ScrollView style={[Styles.habitsScroll, {height:this.state.height - 150}]}>
+                    <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
+                    {this.state.habits ? Object.keys(this.state.habits).map(key => {
+                        return(
+                            <ListItem key={key} data={this.state.habits[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} pause={this.pauseHabit} list={this.state.list} theme={this.state.theme}></ListItem>
+                        )
+                    }) : null }
+                    
+                    </View>
+                    {this.state.paused ? (Object.keys(this.state.paused).length > 0) ? (
+                        <View>
+                            <Text style={[Styles.medium, {color:this.state.color}]}>Paused</Text>
+                            <View style={{flexDirection:this.state.list ? "column" : "row", flexWrap:"wrap"}}>
+                            {Object.keys(this.state.paused).map(key => {
+                                return(
+                                <ListItem key={key} data={this.state.paused[key]} edit={this.state.edit} delete={this.delete} updateHabits={this.updateHabits} showConfetti={this.showConfetti} paused={true} pause={this.play} list={this.state.list} theme={this.state.theme}></ListItem>
+                                )
+                            })}
+                            </View>
+                        </View>
+                    ) : null
+                    : null}
+                    
+                </ScrollView>
+                </View>
+                <this.menuBar />
+            </View>
+            )
+        }
     }else if (this.state.screen === "add"){
       return(
         <View style={{height:this.state.height}}>

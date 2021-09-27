@@ -14,6 +14,9 @@ import {
     Platform,
     Animated,
 } from "react-native";
+import AppStyle from "../Styles/AppStyle";
+import ColoursStyle from "../Styles/ColoursStyle";
+
 export default class Colours extends Component {
     constructor(props) {
         super(props);
@@ -89,50 +92,33 @@ export default class Colours extends Component {
     }
 
     render() {
+        let backgroundColor = this.props.theme === "light" ? "#E3E3E3" : "#282828"
+        let color = this.props.theme === "light" ? "black" : "#E3E3E3"
         return (
             <View
-                style={{
-                    padding: 10,
-                    borderRadius: 5,
-                    backgroundColor:
-                        this.props.theme === "light" ? "#E3E3E3" : "#282828",
-                    marginTop: 5,
-                }}
+                style={[ColoursStyle.container, {
+                    backgroundColor:backgroundColor
+                }]}
             >
                 <View>
                     <TouchableOpacity onPress={this.handleRotation}>
                         <View
-                            style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}
+                            style={ColoursStyle.main}
                         >
                             <View
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                }}
+                                style={ColoursStyle.innerMain}
                             >
                                 <View
-                                    style={{
-                                        height: 10,
-                                        width: 10,
-                                        borderRadius: 100,
+                                    style={[ColoursStyle.colour, {
                                         backgroundColor:
                                             this.state.selectedColour,
-                                    }}
+                                    }]}
                                 ></View>
                                 <Text
-                                    style={{
-                                        fontSize: 16,
+                                    style={[AppStyle.small, {
                                         marginLeft: 5,
-                                        fontFamily: "regular",
-                                        color:
-                                            this.props.theme === "light"
-                                                ? "black"
-                                                : "#E3E3E3",
-                                    }}
+                                        color:color
+                                    }]}
                                 >
                                     {this.state.colour
                                         ? this.state.colour
@@ -141,12 +127,7 @@ export default class Colours extends Component {
                             </View>
                             <Animated.Image
                                 source={require("../assets/arrow.png")}
-                                style={{
-                                    marginLeft: 10,
-                                    height: 10,
-                                    width: 10,
-                                    marginRight: 5,
-                                    marginTop: 2.5,
+                                style={[ColoursStyle.arrow, {
                                     tintColor:
                                         this.props.theme === "light"
                                             ? "black"
@@ -154,7 +135,7 @@ export default class Colours extends Component {
                                     transform: [
                                         { rotate: this.interpolateRotating },
                                     ],
-                                }}
+                                }]}
                             ></Animated.Image>
                         </View>
                     </TouchableOpacity>
@@ -174,30 +155,21 @@ export default class Colours extends Component {
                                 }}
                             >
                                 <View
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        margin: 10,
-                                    }}
+                                    style={ColoursStyle.colourContainer}
                                 >
                                     <View
-                                        style={{
-                                            height: 10,
-                                            width: 10,
-                                            borderRadius: 100,
+                                        style={[ColoursStyle.colour, {    
                                             backgroundColor: value.code,
-                                        }}
+                                        }]}
                                     ></View>
                                     <Text
-                                        style={{
+                                        style={[AppStyle.small, {
                                             marginLeft: 5,
-                                            fontSize: 16,
-                                            fontFamily: "regular",
                                             color:
                                                 this.props.theme === "light"
                                                     ? "black"
                                                     : "#E3E3E3",
-                                        }}
+                                        }]}
                                     >
                                         {value.name}
                                     </Text>
