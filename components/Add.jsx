@@ -27,6 +27,12 @@ export default class Add extends Component {
 		this.setColour = this.setColour.bind(this);
 		this.add = this.add.bind(this);
 		this.habitTitles = null;
+
+		Dimensions.addEventListener("change", () => {
+			this.setState({
+				height:Dimensions.get("window").height
+			})
+		})
 		AsyncStorage.getItem("habits").then((res) => {
 			if (res) {
 				res = JSON.parse(res);

@@ -309,13 +309,12 @@ export default class App extends Component{
   }
 
   renderScreens(){
-    console.log(this.state)
     if (!this.state.screen){
         if (!this.state.name){
             let color = this.state.theme === "light" ? "black" : "#E1E1E1";
             let backgroundColor = this.props.theme === "light" ? "#E8E8E8" : "#282828";
             return (
-            <View style={[Styles.medium, Styles.bold, {justifyContent:"space-between", height:this.state.height, padding:20}]}>
+            <View style={[Styles.medium, Styles.bold, {justifyContent:"space-between", height:this.state.height, padding:"5%"}]}>
                 <View>
                     <View>
                         <Text style={[Styles.large, Styles.bold, {color:color}]}>Done.</Text>

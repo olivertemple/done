@@ -2,8 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     container: {
-        padding: 20,
-        justifyContent: "space-between",
+        padding: "5%",
         elevation: 0,
     },
     title: {
@@ -51,5 +50,6 @@ export default StyleSheet.create({
         justifyContent: "space-evenly",
         padding: 10,
         alignItems: "center",
+        marginTop:10
     },
 });

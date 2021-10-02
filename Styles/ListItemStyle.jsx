@@ -31,7 +31,7 @@ export default StyleSheet.create({
         flexDirection:"row",
         position:"absolute",
         borderRadius:10,
-        height:"100%"
+        height:"100%",
     },
     colorItem:{
         zIndex:0,

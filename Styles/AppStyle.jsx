@@ -5,7 +5,8 @@ export default StyleSheet.create({
         flexDirection : "row",
         justifyContent : "space-between",
         alignItems : "center",
-        padding : 5
+        padding : 5,
+        marginBottom:10
     },
     Image:{
         height : 30,
@@ -13,7 +14,8 @@ export default StyleSheet.create({
         tintColor : "#C5C5C5"
     },
     titleBar:{
-        alignItems:"center"
+        alignItems:"center",
+        paddingTop:10
     },
     bold:{
         fontFamily:"bold"
