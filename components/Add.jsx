@@ -184,7 +184,7 @@ export default class Add extends Component {
 													: "#282828"
 												: this.props.theme === "light"
 												? "white"
-												: "black",
+												: "#141414",
 										borderRadius: 5,
 									}}
 								>
@@ -212,7 +212,7 @@ export default class Add extends Component {
 													: "#282828"
 												: this.props.theme === "light"
 												? "white"
-												: "black",
+												: "#141414",
 										borderRadius: 5,
 									}}
 								>
