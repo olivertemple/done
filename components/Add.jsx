@@ -194,7 +194,7 @@ export default class Add extends Component {
 											{
 												padding: 10,
 												color: color,
-											},
+											}
 										]}
 									>
 										Daily
